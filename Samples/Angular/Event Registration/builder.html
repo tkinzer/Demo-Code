@@ -1,0 +1,286 @@
+﻿<style>
+    .btn-header {
+        border: none;
+        width: 100%;
+        min-height: 40px;
+        background: black;
+        color: white;
+    }
+
+    .custom-reg-actions {
+        padding: 10px;
+        background: #ffffff;
+        height: 100px;
+    }
+
+    .custom-reg-event-builder {
+    }
+
+    .custom-reg-header {
+        min-height: 120px;
+        position: fixed;
+        top: 75px;
+        left: 0px;
+        width: 100%;
+        background: white;
+        z-index: 999;
+    }
+
+    .custom-reg-builder-body {
+        min-height: 600px;
+        margin-top: 200px;
+    }
+
+    .custom-reg-content-settings {
+        padding: 0px;
+        margin: 0px;
+        padding-bottom: 70px;
+    }
+
+    .custom-reg-content-preview {
+        background: purple;
+    }
+
+    #accordion {
+        padding-bottom: 100px;
+    }
+
+    .card-header {
+        padding: 0px;
+    }
+
+    .card-body {
+        padding: 10px 5px 5px 10px;
+    }
+
+    .btn-outline-primary {
+        color: #f66e00;
+        border-color: #f66e00;
+    }
+
+        .btn-outline-primary:hover {
+            background: #f66e00;
+        }
+</style>
+
+<div class="custom-reg-parent-container" style="margin-top: 80px;">
+
+    <div class="custom-reg-select-event col-md-12 col-xs-12" ng-show="!showEventBuilder">
+        <div class="col-md-12 col-xs-12 text-center" style="margin-top:150px;">
+            <h3>Custom Registration Builder</h3>
+            <p>Select an Event to start:</p>
+            <select class="form-control" ng-model="selectedEvent" ng-change="selectEvent();" ng-options="e.name for e in events">
+                <option value="">--Select--</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="custom-reg-event-builder col-md-12 col-xs-12" ng-show="showEventBuilder">
+        <div class="custom-reg-header col-md-12 col-xs-12">
+            <div class="col-md-12 col-xs-12">
+                <h3 class="col-md-6 pull-left col-xs-12">
+                    <img id="brand" class="template-logo" src="{{defaultLogo}}" height="80px" style="margin:12px;max-height:80px;" />
+                    Select Event:
+
+                </h3>
+                <div class="col-md-6 col-xs-12 pull-right">
+                    <select class="form-control" ng-model="selectedEvent" ng-change="selectEvent();" ng-options="e.name for e in events">
+                        <option value="">--Select--</option>
+                    </select>
+                    <div class="custom-reg-actions col-md-12 col-xs-12 text-center">
+                        <button class="btn btn-default" ng-click="exitCustomRegistration()">
+                            Cancel
+                        </button>
+                        <button class="btn btn-outline-primary" ng-click="saveCustomRegistration()">
+                            Save
+                        </button>
+                        <button class="btn btn-primary pull-right" ng-click="publishCustomRegistration()">
+                            Publish
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="custom-reg-builder-body col-md-12 col-xs-12 text-center">
+
+            <div class="custom-reg-content col-md-12 col-xs-12 border">
+                <div class="custom-reg-content-preview col-md-9 col-sm-8 col-xs-12 pull-left border" style="background-image: {{backgroundImage}}; background-color: {{backgroundColor}};">
+                    <registration-workflow event="testEvent" steps="testSteps" current="testCurrent" help-text="testHelptext" fill="fill" data="pageSettings">
+                        <div ng-include="selectedRoute"></div>
+                    </registration-workflow>
+                </div>
+                <div class="custom-reg-content-settings col-md-3 col-sm-4 col-xs-12 pull-right border" style="min-height: 500px;overflow:hidden;padding-bottom:30px;">
+                    <h4 class="text-center" style="padding:15px;background:#f66e00;margin:0px;color:white;">Page Settings</h4>
+                    <div style="min-height:500px; overflow-y: scroll;overflow-x:hidden;min-width:108%;">
+                        <div id="accordion" role="tablist">
+                            <div class="card">
+                                <div class="card-header" role="tab" id="headingOne">
+                                    <h5 class="mb-0">
+                                        <button class="btn-header" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Background
+                                        </button>
+                                    </h5>
+                                </div>
+
+                                <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                                    <div class="card-body">
+                                        <p class="help-text">
+                                            Control the look and feel of your page by customizing the overall background of the page.
+                                        </p>
+                                        <div class="text-center">
+                                            <label>
+                                                Background Color
+                                                <color-picker ng-model="pageSettings.background.color" options="colorOptions"></color-picker>
+                                            </label>
+                                            <label>
+                                                Background Image <br />
+                                                <input type="text" ng-model="pageSettings.background.image" class="" id="custom-reg-background-image" />
+                                            </label>
+                                            <label>
+                                                <button class="btn btn-default btn-sm" ng-click="uploadAvatar();" style="width:138px;padding-top:6px;padding-bottom:6px;">Upload Image</button>
+                                                <ima-upload pf-hidden="true" pf-action="{{logoEndpoint}}" on-callback="onAvatarUploaded" pf-selector="avatar-uploader"></ima-upload>
+                                            </label><br />
+                                            <label for="custom-reg-background-image-stretch">
+                                                <input type="radio" ng-model="pageSettings.background.imageDisplayType" class="ima-checkbox" name="imageType" id="custom-reg-background-image-stretch" />
+                                                Stretch
+                                            </label> <br />
+                                            <label for="custom-reg-background-image-tile">
+                                                <input type="radio" ng-model="pageSettings.background.imageDisplayType" class="ima-checkbox" name="imageType" id="custom-reg-background-image-tile" />
+                                                Tile
+                                            </label>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header" role="tab" id="headingTwo">
+                                    <h5 class="mb-0">
+                                        <button class="collapsed btn-header" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                            Top Banner
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
+                                    <div class="card-body">
+                                        <p class="help-text">
+                                            The top banner is an ideal location to promote your race and showcase materials.
+                                        </p>
+                                        <div>
+                                            <label>
+                                                Banner Image <br />
+                                                <input type="text" ng-model="pageSettings.topBanner.image" class="" id="custom-reg-top-banner-image" />
+                                            </label>
+                                            <label>
+                                                <button class="btn btn-default btn-sm" ng-click="uploadAvatar();" style="width:138px;padding-top:6px;padding-bottom:6px;">Upload Image</button>
+                                                <ima-upload pf-hidden="true" pf-action="{{logoEndpoint}}" on-callback="onAvatarUploaded" pf-selector="avatar-uploader"></ima-upload>
+                                            </label>
+                                            <label>
+                                                Image Hyperlink
+                                                <input type="text" ng-model="pageSettings.topBanner.link" class="display-block" id="" />
+                                            </label>
+                                            <label>
+                                                <button type="button" class="pull-right btn-link">
+                                                    TEST LINK
+                                                </button>
+                                            </label>
+                                            <label>Image Alignment</label><br />
+                                            <label for="top-banner-left">
+                                                <input type="radio" ng-model="pageSettings.topBanner.alignment" class="" name="top-banner-alignment" value="left" id="top-banner-left" /> Left
+                                            </label>
+                                            <label for="top-banner-center">
+                                                <input type="radio" ng-model="pageSettings.topBanner.alignment" class="" name="top-banner-alignment" value="center" id="top-banner-center" /> Center
+                                            </label>
+                                            <label for="top-banner-right">
+                                                <input type="radio" ng-model="pageSettings.topBanner.alignment" class="" name="top-banner-alignment" value="right" id="top-banner-right" /> Right
+                                            </label>
+
+                                            <button class="btn" ng-click="expandAdvancedSetting('top')">Advanced Settings</button>
+
+                                            <div ng-if="showAdvancedSettingsTop">
+                                                <label for="top-banner-margin-top">
+                                                    Banner Margin Top (px)
+                                                    <input ng-model="pageSettings.topBanner.margin.top" type="text" class="display-block" name="topBannerMarginTop" id="top-banner-margin-top" />
+                                                </label>
+                                                <label for="top-banner-margin-bot">
+                                                    Banner Margin Bottom (px)
+                                                    <input ng-model="pageSettings.topBanner.margin.bottom" type="text" class="display-block" name="topBannerMarginBot" id="top-banner-margin-bot" />
+                                                </label>
+                                                <label for="top-banner-width">
+                                                    Banner Width (px)
+                                                    <input type="text" ng-model="pageSettings.topBanner.width" class="display-block" name="topBannerWidth" id="top-banner-width" />
+                                                </label>
+                                                <label>
+                                                    Banner Background Color
+                                                    <color-picker ng-model="pageSettings.topBanner.background.color" options="colorOptions"></color-picker>
+                                                </label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header" role="tab" id="headingThree">
+                                    <h5 class="mb-0">
+                                        <button class="collapsed btn-header" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                            Side Banner
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
+                                    <div class="card-body">
+                                        <p class="help-text">
+                                            Further market your event with the addition of materials to the side banner.
+                                        </p>
+                                        <div>
+                                            <label>
+                                                Banner Image <br />
+                                                <input type="text" ng-model="pageSettings.sideBanner.image" class="" id="custom-reg-top-banner-image" />
+                                            </label>
+                                            <label>
+                                                <button class="btn btn-default btn-sm" ng-click="uploadAvatar();" style="width:138px;padding-top:6px;padding-bottom:6px;">Upload Image</button>
+                                                <ima-upload pf-hidden="true" pf-action="{{logoEndpoint}}" on-callback="onAvatarUploaded" pf-selector="avatar-uploader"></ima-upload>
+                                            </label>
+                                            <label>
+                                                Image Hyperlink
+                                                <input type="text" ng-model="pageSettings.sideBanner.link" class="display-block" id="" />
+                                            </label>
+                                            <label>
+                                                <button type="button" class="pull-right btn-link">
+                                                    TEST LINK
+                                                </button>
+                                            </label>
+                                            <button class="btn" ng-click="expandAdvancedSetting('side')">Advanced Settings</button>
+
+                                            <div ng-if="showAdvancedSettingsSide">
+                                                <label for="side-banner-margin-top">
+                                                    Banner Margin Top (px)
+                                                    <input type="text" ng-model="pageSettings.sideBanner.margin.top" class="display-block" name="sideBannerMarginTop" id="side-banner-margin-top" />
+                                                </label>
+                                                <label for="side-banner-margin-right">
+                                                    Banner Margin Right (px)
+                                                    <input type="text" ng-model="pageSettings.sideBanner.margin.right" class="display-block" name="sideBannerMarginBot" id="side-banner-margin-right" />
+                                                </label>
+                                                <label for="side-banner-width">
+                                                    Banner Width (px)
+                                                    <input type="text" ng-model="pageSettings.sideBanner.width" class="display-block" name="sideBannerWidth" id="side-banner-width" />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>

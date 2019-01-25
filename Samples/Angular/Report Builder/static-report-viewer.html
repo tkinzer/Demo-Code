@@ -1,0 +1,77 @@
+﻿<div style="padding-top:78px;height:calc(100% - 80px);padding-left:6px;">
+    
+    
+
+    <div>
+        <div class="btn-group" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{selectedReport.name}}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" style="max-height: 300px; overflow: auto;">
+                    <li class="dropdown-list" ng-repeat="report in reports"><a class="dropdown-link" href="javascript://" ng-click="selectReport(report);" report-id="{{report.id}}">{{report.name}}</a></li>
+                </ul>
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="selectedReport.id < 0">
+                    {{selectedEvent.EventName}}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" style="white-space:nowrap; max-height: 300px; overflow: auto;">
+                    <li class="dropdown-list" ng-repeat="event in events"><a class="dropdown-link" href="javascript://" ng-click="selectEvent(event);" event-id="{{event.EventID}}">{{event.EventName}}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="pull-right date-range-selector">
+            <div class="dropdown" observe-class="show" on-observed="checkDateRange" on-not-observed="checkDateRangeChanged">
+                <button class="btn btn-default dropdown-toggle" style="border:none;"  type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
+                    {{startDate.toLocaleDateString()}}-{{endDate.toLocaleDateString()}}
+                    <span class=""><i class="fa" aria-hidden="true" ng-class="{'fa-angle-down': !dateRangeOpened, 'fa-angle-up': dateRangeOpened}"></i></span>
+                   
+                </button>
+                <ul id="dateRangeSelector" class="dropdown-menu" aria-labelledby="dropdownMenu1" style="left:auto;right:0;">
+                    <li style="min-width:581px;">
+                        <div style="padding:0 6px 6px 6px;">
+                            <div style="display:inline-block; min-height:260px;">
+                                <label style="margin-top:0;">Start Date</label>
+                                <div uib-datepicker ng-model="startDate" class="well well-sm dp"  datepicker-options="options"></div>
+                            </div>
+                            <div style="display:inline-block; min-height:260px;">
+                                <label style="margin-top:0;">End Date</label>
+                                <div uib-datepicker ng-model="endDate" class="well well-sm dp" datepicker-options="options"></div>
+                            </div>
+                        </div>
+                        
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+    
+    <div class="fill-height" ng-show="loaded && !loading  && gridOptions.data  && gridOptions.data.length > 0">
+        <div class="content-placeholder">
+
+
+        </div>
+
+        <h5 class="report-section-heading" style="padding-left:6px;">{{title}}</h5>
+
+        <div class="btn-group" role="group" style="margin-bottom:6px;">
+            <button type="button" class="btn btn-default" ng-class="{'toggle-down': gridOptions.enableFiltering}" ng-click="toggleFilter();" aria-label="Left Align">
+                <i class="fa fa-filter" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-default" ng-click="exportCsv();" aria-label="Left Align">
+                <i class="fa fa-download" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div ng-if="gridOptions && gridOptions.columnDefs" id="grid1" ui-grid="gridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-move-columns ui-grid-exporter class="grid"></div>
+        
+    </div>
+
+    <div ng-if="gridOptions.data.length === 0 && loaded && !loading" style="padding-left:24px;padding-top: 24px;color: #CCC;font-weight: 600;font-size: 24px;">No data available within date range specified</div>
+    
+    <ima-loader ima-heading="Fetching Report Data"></ima-loader>
+</div>

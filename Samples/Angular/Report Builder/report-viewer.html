@@ -1,0 +1,131 @@
+﻿<script type="text/ng-template" id="dataFieldsTmpl">
+    <a ng-if="(field.Fields && isArray(field.Fields) && field.Fields.length > 0)" class="tree-expander-icon" ng-click="field.__expanded ? (field.__expanded = false) : (field.__expanded = true)"><i class="fa" ng-class="{'fa-plus': !field.__expanded, 'fa-minus': field.__expanded}" aria-hidden="true"></i></a>
+    <input type="checkbox" id="inlineCheckbox1" ng-change="addFieldFromDataSource(field)" ng-checked="field.selected" ng-model="field.selected">
+    <span class="small prop-checkbox-label">{{ (field.DisplayName || field.Name) | unpascal }}</span>
+    <ul ng-if="(field.Fields  && field.Fields.length > 0) && (field.__expanded || (treeFilter && treeFilter.length >= 2))" style="padding-left:15px">
+        <li ng-repeat="field in field.Fields track by $index" ng-include="'dataFieldsTmpl'" ng-if="nodeIsVisible(field)"> </li>
+    </ul>
+</script>
+
+<script type="text/ng-template" id="updateDataModelTmpl">
+    <div class="properties-header ui-grid-footer-panel">
+        Select Report Fields
+        <a ng-click="toggleProperties();"><i class="fa fa-times" aria-hidden="true"></i></a>
+    </div>
+    <div style="padding:8px;margin-top:35px;height:100%;">
+        <div class="input-group input-group-sm" style="position:relative;">
+            <input type="text" class="search-text form-control" ng-model="treeFilter" ng-focus="toggleTreeFilterFocus()" ng-blur="toggleTreeFilterFocus()" />
+            <span ng-if="!treeFilterHasFocus && !treeFilter" class="search-icon"><i class="fa fa-search" aria-hidden="true"></i></span>
+        </div>
+        <div class="rounded border" style="padding:8px;margin-top:8px;background-color:#FFF;height: calc(100% - 106px);overflow-y:auto;overflow-x:hidden;">
+            <ul name="uiTree" class="ui-tree" style="padding-left:0; overflow: auto;">
+                <li ng-repeat="field in dataFields track by $index" ng-include="'dataFieldsTmpl'"></li>
+            </ul>
+
+        </div>
+
+        <div style="margin-top:8px"  ng-if="!fieldSelected">
+
+            <button class="btn btn-default btn-small pull-right" style="cursor:pointer;color: #333;  background-color: #fff; border-color: #ccc;padding: 5px 10px;font-size: 12px;line-height: 1.5;border-radius: 3px;"
+                    ng-click="" disabled>
+                <span>
+                    Load Data
+                </span>
+            </button>
+
+        </div>
+        <div style="margin-top:8px" ng-if="fieldSelected">
+            <button class="btn btn-default btn-small pull-right" style="cursor:pointer;color: #333;  background-color: #fff; border-color: #ccc;padding: 5px 10px;font-size: 12px;line-height: 1.5;border-radius: 3px;"
+                    ng-click="changeDatasource();">
+                <span>
+                    Load Data
+                </span>
+            </button>
+
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="pivotTableTmpl">
+    <div class="properties-header ui-grid-footer-panel">
+        Datasource Properties
+        <a ng-click="toggleProperties();"><i class="fa fa-times" aria-hidden="true"></i></a>
+    </div>
+    <div style="padding:10px;margin-top:20px;height:100%;position:relative;z-index:0;">
+        <label for="dimension">Dimension</label>
+        <select name="dimension" class="form-control" ng-change="updateDatasource(datasource)" ng-model="datasource" style="margin-bottom:20px;">
+            <option value="master" selected>Master</option>
+            <option value="transactional">Transactional</option>
+        </select>
+
+        <label for="uiTree">Available Fields</label>
+        <ul name="uiTree" style="padding-left:0; max-height: 165px; overflow: auto;" class="ui-tree">
+            <li ng-repeat="field in dataFields track by $index" ng-include="'dataFieldsTmpl'"></li>
+        </ul>
+
+        <label>Selected Fields</label>
+        <div class="select-list" ng-class="{'non-selected' : countProperties(selectedFields) === 0 }">
+            <span class="subtle" ng-if="countProperties(selectedFields) === 0 ">You have not selected any fields</span>
+            <span class="pill" ng-repeat="(key, value) in selectedFields" title="{{key}}" x-lvl-draggable='true'>{{value.name}}<i class="fa fa-times" aria-hidden="true"></i></span>
+        </div>
+
+        <div style="line-height:0;border-top:solid 1px black; border-right:solid 1px black;">
+            <div x-lvl-drop-target='true' x-on-drop='dropped(dragEl, dropEl)' drop-model="selectedColumns" class="drop-grid-cell">
+                <i class="fa fa-filter" aria-hidden="true"></i>
+                <ul style="height: 100%; overflow-y:scroll;  padding: 0; list-style: none;">
+                    <li ng-repeat="(key, value) in selectedColumns" title="{{key}}">{{value}}</li>
+                </ul>
+
+
+            </div><div class="drop-grid-cell"><i class="fa fa-bars fa-rotate-90" aria-hidden="true"></i></div><div class="drop-grid-cell"><i class="fa fa-bars" aria-hidden="true"></i></div><div class="drop-grid-cell"><i class="fa fa-sum" aria-hidden="true"></i></div>
+        </div>
+
+        <div style="position:absolute;bottom:55px;">
+            <a class="btn btn-default btn-small" style="cursor:pointer;color: #333;  background-color: #fff; border-color: #ccc;padding: 5px 10px;font-size: 12px;line-height: 1.5;border-radius: 3px;" ng-click="changeDatasource(datasource);">Update Datasource</a>
+        </div>
+    </div>
+    <div class="properties-footer ui-grid-footer-panel">
+
+    </div>
+</script>
+
+<script type="text/ng-template" id="propertiesWindowTmpl">
+
+</script>
+<div class="fill-height" style="padding:6px;">
+    <ima-toolbar ima-data="toolbar"></ima-toolbar>
+    <div class="bi-grid" style="height:calc(100% - 64px);">
+
+        <div class="row" style="height:100%;">
+            <div ng-class="{'col-md-9 no-right-pad': showProperties, 'col-md-12' : !showProperties}">
+                <div style="z-index:10;position:relative;" id="grid1" ui-grid="gridOptions" ui-grid-expandable ui-grid-grouping ui-grid-save-state ui-grid-resize-columns ui-grid-move-columns
+                     ui-grid-auto-resize ui-grid-edit ui-grid-selection ui-grid-exporter class="grid">
+                    <ima-loader ima-heading="Fetching Report Data" ima-loading="$parent.loading"></ima-loader>
+                </div>
+                <div id="subMenuContainer" class="modal">
+
+                    <!-- Modal content -->
+                    <div id="subMenuContent" class="modal-content">
+                        <span class="close"></span>
+                        <ul class="sub-menu">
+                            <li ng-repeat="field in aggregationFields">
+                                <button type="button" class="ui-grid-menu-item ng-binding" ng-click="onPivot(field)" ng-class="{ 'ui-grid-menu-item-active': active(), 'ui-grid-sr-only': (!focus &amp;&amp; screenReaderOnly) }" aria-pressed="" tabindex="0" ng-focus="focus=true" ng-blur="focus=false">
+                                    <span><i ng-class="icon" aria-hidden="true" class="fa fa-random bi-menu-icon">&nbsp;</i> {{field}}</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div ng-if="showProperties" class="col-md-3" ng-include="'updateDataModelTmpl'" style="padding-right:3px;background-color:#fdfdfd;position:relative;padding-left:0;left: 1px;">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--<ima-modal-dialog id="selectVisualization" heading="Create Data Visualization" template-url="/app/templates/widgets/dashboard/line-chart.html" ima-include-chart-data ima-include-chart-labels></ima-modal-dialog>-->
+
+<ima-modal-dialog modal-id="saveToListDialog" heading="Save Data to List" action="saveList" action-text="Save" template-url="/app/templates/views/reporting/modal/save-list.html"></ima-modal-dialog>
