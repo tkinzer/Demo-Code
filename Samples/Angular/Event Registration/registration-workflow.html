@@ -1,0 +1,72 @@
+﻿<div class="custom-bg-container text-center" style="min-height:100%;padding:0px;margin:0px;padding-top:70px;background-repeat: {{pageSettings.background.backgroundRepeat === 'repeat' ? 'repeat' : 'no-repeat'}}; background-color: #{{pageSettings.background.backgroundColor}} !important; background: url('{{pageSettings.background.imageBlobUrl}}'); background-size: {{pageSettings.background.imageDisplayType === 'stretch' ? '100% 100%' : ''}};">
+    <div class="registration-template-container col-md-12">
+        <div class="registration-side-banner ng-cloak" ng-if="pageSettings.sideBanner.imageBlobUrl !== null && pageSettings.topBanner.imageBlobUrl !== ''" style="width: {{pageSettings.sideBanner.width}}px; margin-top: {{pageSettings.sideBanner.marginTop}}px; margin-right: {{pageSettings.sideBanner.marginRight}}px;">
+            <a href="{{pageSettings.sideBanner.hyperlink}}" target="_blank">
+                <img src="{{pageSettings.sideBanner.imageBlobUrl}}" style="height:auto; width: {{pageSettings.sideBanner.width}}px;">
+            </a>
+        </div>
+
+        <div style="padding:0px;margin:0px;margin-bottom:50px;box-sizing:inherit;">
+            <div class="registration-top-banner ng-cloak" ng-if="pageSettings.topBanner.imageBlobUrl !== null && pageSettings.topBanner.imageBlobUrl !== ''" ng-class="{'text-center':pageSettings.topBanner.alignment === 'center'}" style="background:none;background-color: #{{pageSettings.topBanner.backgroundColor}} !important;">
+                <a class="col-md-12 col-xs-12 text-center" href="{{pageSettings.topBanner.hyperlink}}" target="_blank">
+                    <img src="{{pageSettings.topBanner.imageBlobUrl}}" style="text-alignment: {{pageSettings.topBanner.alignment}}; margin-top: {{pageSettings.topBanner.marginTop}}px;
+                            margin-bottom: {{pageSettings.topBanner.marginBottom}}px; width: {{pageSettings.topBanner.width}}px;min-width:100px;" ng-class="{'pull-left':pageSettings.topBanner.alignment === 'left','pull-right':pageSettings.topBanner.alignment === 'right'}">
+                </a>
+            </div>
+            <div class="registration-content col-md-12" style="min-width:960px;background:white;padding:0px;margin:0px;box-sizing:inherit;">
+                <div class="col-md-12 custom-section" style="padding:0px;margin:0px;">
+                    <div ng-clock class="registration-header border col-md-12" >
+                        <div class="registration-help-text col-md-12">
+                            <span class="pull-right rounded">
+                                Need help? Email <a href="mailto:support@imathlete.com?" target="_blank">imATHLETE Support</a>
+                            </span>
+
+                        </div>
+                        <div class="registration-event-details col-md-12" >
+                            <div class="col-md-12 col-xs-12 text-left">
+                                <h3 class="reg-event-name" >
+                                    {{details.eventName}}
+                                </h3>
+
+                            </div>
+                            <div id="reg-event-location" class="event-header-detail pull-left text-center col-md-6 col-xs-12">
+                                <span class="fa fa-map-marker reg-icon"></span><br/>
+                                {{details.address}}
+                            </div>
+                            <div id="reg-event-date" class="pull-right text-center event-header-detail col-md-6 col-xs-12">
+                                <span class="fa fa-calendar-o reg-icon"></span><br/>
+                                    {{details.startDate}}
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12 progress-bar-box">
+                            <div class="registration-progress-bar col-md-12" style="">
+                                <progress-bar ima-stages="pages" ima-current="current" ima-fill="fill"></progress-bar>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="showFlash">
+                    <ima-flash-message></ima-flash-message>
+                </div>
+                <div class="registration-announcements" ng-if="data.announcement && data.announcement.length > 0">{{pageSettings.announcement}}</div>
+                <div class="registration-body col-md-12 col-xs-12">
+                    <div ng-if="!eventClosed">
+                        <ng-transclude></ng-transclude>
+                    </div>
+                    <div ng-if="eventClosed">
+                        <div class="jumbotron" style="margin:0px !important;">
+                            <h3>This event has already closed.</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="registration-navigation border rounded col-md-12" style="margin:0px;">
+                    <button type="button" class="registration-back-button btn btn-default pull-left" ng-if="!firstStep" ng-click="previousStep()">Back</button>
+                    <button type="button" class="registration-next-button btn btn-primary pull-right" ng-if="!eventClosed" ng-click="nextStep()" ng-bind="getButtonText();"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

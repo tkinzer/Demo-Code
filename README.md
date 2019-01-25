@@ -1,4 +1,10 @@
-Sample-Code
+*** Note: Due to new computer, old computer relationship issues, a few projects and files are still in the process of being excavated ***
+
+
+
+
+##Sample-Code
+
 Included in the “Timothy Kinzer Sample Code” folder are files and images of past projects, as well as a few recent tutorials to code in React.
 
 VolKno, SubscriberVoice, and Boundless can still actively be visited at the following websites:
